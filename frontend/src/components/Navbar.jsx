@@ -26,6 +26,7 @@ export default function Navbar() {
       <Link to="/" style={styles.brand}>FreelanceHub</Link>
       <div style={styles.links}>
         <Link to="/" style={styles.link}>Browse Projects</Link>
+        <Link to="/sub-requirements" style={styles.link}>Open Roles</Link>
         {user?.role === 'CLIENT' && <>
           <Link to="/post-project" style={styles.link}>Post Project</Link>
           <Link to="/my-projects"  style={styles.link}>My Projects</Link>
@@ -40,6 +41,7 @@ export default function Navbar() {
               <Link to="/register" style={{ ...styles.link }}>
                 <button style={styles.btn}>Sign Up</button>
               </Link>
+              
             </>
         }
         {user && <span style={{ color: '#aaa', fontSize: 13 }}>Hi, {user.fullName}</span>}

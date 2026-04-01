@@ -30,7 +30,7 @@ public class Contract {
     private Project project;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "bid_id", nullable = false)
+    @JoinColumn(name = "bid_id", nullable = true)   // ← change false to true
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "passwordHash"})
 
     private Bid bid;

@@ -1,13 +1,11 @@
 package com.freelance.backend.service;
 
-
 import com.freelance.backend.dto.BidRequest;
 import com.freelance.backend.model.*;
 import com.freelance.backend.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -18,7 +16,7 @@ public class BidService {
     private final BidRepository bidRepo;
     private final ProjectRepository projectRepo;
     private final FreelancerProfileRepository freelancerProfileRepo;
-    private final ContractRepository contractRepo;    // add simple ContractRepository
+    private final ContractRepository contractRepo;
 
     @Transactional
     public Bid placeBid(Integer userId, Integer projectId, BidRequest req) {
@@ -29,7 +27,7 @@ public class BidService {
             throw new IllegalStateException("Project is not open for bidding");
         }
 
-        FreelancerProfile freelancer = freelancerProfileRepo.findByUserUserId(userId)
+        FreelancerProfile freelancer = freelancerProfileRepo.findByUserId(userId)
                 .orElseThrow(() -> new IllegalArgumentException("Freelancer profile not found"));
 
         if (bidRepo.existsByProjectProjectIdAndFreelancerFreelancerId(
@@ -54,9 +52,19 @@ public class BidService {
     }
 
     public List<Bid> getFreelancerBids(Integer userId) {
-        FreelancerProfile freelancer = freelancerProfileRepo.findByUserUserId(userId)
+        FreelancerProfile freelancer = freelancerProfileRepo.findByUserId(userId)
                 .orElseThrow(() -> new IllegalArgumentException("Freelancer not found"));
-        return bidRepo.findByFreelancerFreelancerId(freelancer.getFreelancerId());
+
+        List<Bid> bids = bidRepo.findByFreelancerFreelancerId(freelancer.getFreelancerId());
+
+        // Attach contractId to accepted bids
+        for (Bid b : bids) {
+            if (b.getStatus() == Bid.Status.ACCEPTED) {
+                contractRepo.findByBidBidId(b.getBidId())
+                        .ifPresent(c -> b.setContractId(c.getContractId()));
+            }
+        }
+        return bids;
     }
 
     @Transactional
@@ -69,11 +77,9 @@ public class BidService {
             throw new IllegalStateException("Project is not open");
         }
 
-        // Accept this bid
         bid.setStatus(Bid.Status.ACCEPTED);
         bidRepo.save(bid);
 
-        // Reject all other pending bids (replaces the dropped trigger)
         List<Bid> otherBids = bidRepo.findByProjectProjectId(project.getProjectId());
         for (Bid otherBid : otherBids) {
             if (!otherBid.getBidId().equals(bidId) &&
@@ -83,11 +89,9 @@ public class BidService {
             }
         }
 
-        // Update project status
         project.setStatus(Project.Status.IN_PROGRESS);
         projectRepo.save(project);
 
-        // Create contract
         BigDecimal total = bid.getBidAmount();
         BigDecimal fee = total.multiply(BigDecimal.valueOf(0.10));
 

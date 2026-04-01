@@ -62,4 +62,6 @@ public class Project {
 
     public enum BudgetType { FIXED, HOURLY }
     public enum Status { DRAFT, OPEN, IN_PROGRESS, COMPLETED, CANCELLED }
+    @Transient
+    private Integer contractId;
 }

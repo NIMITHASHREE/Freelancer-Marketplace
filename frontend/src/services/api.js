@@ -47,3 +47,23 @@ export const bidAPI = {
   getMyBids:  ()          => API.get('/bids/my'),
   acceptBid:  (bidId)     => API.put(`/bids/${bidId}/accept`),
 };
+
+export const milestoneAPI = {
+  getAll:   (contractId)             => API.get(`/contracts/${contractId}/milestones`),
+  create:   (contractId, data)       => API.post(`/contracts/${contractId}/milestones`, data),
+  update:   (milestoneId, data)      => API.put(`/milestones/${milestoneId}`, data),
+  submit:   (milestoneId)            => API.put(`/milestones/${milestoneId}/submit`),
+  approve:  (milestoneId)            => API.put(`/milestones/${milestoneId}/approve`),
+  reject:   (milestoneId)            => API.put(`/milestones/${milestoneId}/reject`),
+  delete:   (milestoneId)            => API.delete(`/milestones/${milestoneId}`),
+};
+
+export const subReqAPI = {
+  getPublic:    ()                       => API.get('/sub-requirements/public'),
+  getForContract: (contractId)           => API.get(`/contracts/${contractId}/sub-requirements`),
+  create:       (contractId, data)       => API.post(`/contracts/${contractId}/sub-requirements`, data),
+  approve:      (subReqId)              => API.put(`/sub-requirements/${subReqId}/approve`),
+  getBids:      (subReqId)              => API.get(`/sub-requirements/${subReqId}/bids`),
+  placeBid:     (subReqId, data)        => API.post(`/sub-requirements/${subReqId}/bids`, data),
+  acceptBid:    (subBidId)             => API.put(`/sub-req-bids/${subBidId}/accept`),
+};

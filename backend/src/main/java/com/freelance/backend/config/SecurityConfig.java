@@ -31,8 +31,13 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/projects/open", "/api/projects/search").permitAll()
+                        .requestMatchers("/api/sub-requirements/public").permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/sub-requirements/*/bids").permitAll()
                         .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/projects/*/bids").permitAll()
+                        .requestMatchers("/api/categories").permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/sub-requirements/*/bids").authenticated()
                         .anyRequest().authenticated()
+
 
                 )
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);

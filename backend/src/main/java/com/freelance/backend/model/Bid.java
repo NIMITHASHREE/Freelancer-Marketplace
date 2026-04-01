@@ -50,4 +50,7 @@ public class Bid {
     protected void onCreate() { createdAt = LocalDateTime.now(); }
 
     public enum Status { PENDING, ACCEPTED, REJECTED, WITHDRAWN }
+
+    @Transient
+    private Integer contractId;
 }

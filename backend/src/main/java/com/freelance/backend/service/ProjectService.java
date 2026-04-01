@@ -1,6 +1,5 @@
 package com.freelance.backend.service;
 
-
 import com.freelance.backend.dto.ProjectRequest;
 import com.freelance.backend.model.*;
 import com.freelance.backend.repository.*;
@@ -15,11 +14,12 @@ public class ProjectService {
 
     private final ProjectRepository projectRepo;
     private final ClientProfileRepository clientProfileRepo;
-    private final CategoryRepository categoryRepo;  // add a simple CategoryRepository
+    private final CategoryRepository categoryRepo;
+    private final ContractRepository contractRepo;
 
     @Transactional
     public Project createProject(Integer userId, ProjectRequest req) {
-        ClientProfile client = clientProfileRepo.findByUserUserId(userId)
+        ClientProfile client = clientProfileRepo.findByUserId(userId)
                 .orElseThrow(() -> new IllegalArgumentException("Client profile not found"));
 
         Category category = req.getCategoryId() != null
@@ -40,7 +40,6 @@ public class ProjectService {
 
         project = projectRepo.save(project);
 
-        // Update client stats
         client.setProjectsPosted(client.getProjectsPosted() + 1);
         clientProfileRepo.save(client);
 
@@ -52,9 +51,17 @@ public class ProjectService {
     }
 
     public List<Project> getClientProjects(Integer userId) {
-        ClientProfile client = clientProfileRepo.findByUserUserId(userId)
+        ClientProfile client = clientProfileRepo.findByUserId(userId)
                 .orElseThrow(() -> new IllegalArgumentException("Client not found"));
-        return projectRepo.findByClientClientId(client.getClientId());
+
+        List<Project> projects = projectRepo.findByClientClientId(client.getClientId());
+
+        // Attach contractId to each project if a contract exists
+        for (Project p : projects) {
+            contractRepo.findByProjectProjectId(p.getProjectId())
+                    .ifPresent(c -> p.setContractId(c.getContractId()));
+        }
+        return projects;
     }
 
     public List<Project> searchProjects(String keyword) {

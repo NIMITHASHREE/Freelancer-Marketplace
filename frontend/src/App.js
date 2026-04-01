@@ -9,6 +9,9 @@ import ProjectDetail from './pages/ProjectDetail';
 import PostProject from './pages/PostProject';
 import MyProjects from './pages/MyProjects';
 import MyBids from './pages/MyBids';
+import ContractDetail    from './pages/ContractDetail';
+import SubRequirementList from './pages/SubRequirementList';
+
 
 // Route guard: redirect to /login if not authenticated
 function PrivateRoute({ children }) {
@@ -30,6 +33,8 @@ export default function App() {
             <Route path="/post-project"   element={<PrivateRoute><PostProject /></PrivateRoute>} />
             <Route path="/my-projects"    element={<PrivateRoute><MyProjects /></PrivateRoute>} />
             <Route path="/my-bids"        element={<PrivateRoute><MyBids /></PrivateRoute>} />
+            <Route path="/contracts/:contractId" element={<PrivateRoute><ContractDetail /></PrivateRoute>} />
+            <Route path="/sub-requirements"      element={<SubRequirementList />} />
           </Routes>
         </div>
       </BrowserRouter>
