@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { milestoneAPI, subReqAPI, projectAPI } from '../services/api';
+import { milestoneAPI, subReqAPI } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 
 const statusColor = {
@@ -34,10 +34,7 @@ export default function ContractDetail() {
   useEffect(() => {
     milestoneAPI.getAll(contractId).then(r => setMilestones(r.data)).catch(() => {});
     subReqAPI.getForContract(contractId).then(r => setSubReqs(r.data)).catch(() => {});
-    // Load categories for sub-req form
-    fetch('http://localhost:8080/api/categories',
-      { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } })
-      .then(r => r.json()).then(setCategories).catch(() => {});
+    subReqAPI.getCategories().then(r => setCategories(r.data)).catch(() => {});
   }, [contractId]);
 
   const progress = milestones.length === 0 ? 0

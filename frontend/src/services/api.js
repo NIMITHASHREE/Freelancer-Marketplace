@@ -1,7 +1,10 @@
 import axios from 'axios';
 
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api';
+
 const API = axios.create({
-  baseURL: 'http://localhost:8080/api',
+  baseURL: API_BASE_URL,
+  timeout: 15000,
 });
 
 // Attach JWT token to every request automatically
@@ -35,7 +38,7 @@ export const authAPI = {
 
 export const projectAPI = {
   getOpen:    ()          => API.get('/projects/open'),
-  search:     (q)         => API.get(`/projects/search?q=${q}`),
+  search:     (q)         => API.get('/projects/search', { params: { q } }),
   getMy:      ()          => API.get('/projects/my'),
   getById:    (id)        => API.get(`/projects/${id}`),
   create:     (data)      => API.post('/projects', data),
@@ -59,6 +62,7 @@ export const milestoneAPI = {
 };
 
 export const subReqAPI = {
+  getCategories: ()                       => API.get('/categories'),
   getPublic:    ()                       => API.get('/sub-requirements/public'),
   getForContract: (contractId)           => API.get(`/contracts/${contractId}/sub-requirements`),
   create:       (contractId, data)       => API.post(`/contracts/${contractId}/sub-requirements`, data),

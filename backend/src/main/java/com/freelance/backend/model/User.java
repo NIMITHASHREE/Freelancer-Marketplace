@@ -30,6 +30,7 @@ public class User {
     @Column(nullable = false)
     private Role role;
 
+    @Builder.Default
     private Boolean isVerified = false;
 
     @Column(updatable = false)
