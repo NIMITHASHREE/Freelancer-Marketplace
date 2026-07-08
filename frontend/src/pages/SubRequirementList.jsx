@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { subReqAPI } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 
@@ -43,10 +42,6 @@ export default function SubRequirementList() {
       </p>
       {items.length === 0 && <p style={{ color:'#aaa' }}>No open sub-requirements right now.</p>}
       {items.map(sr => {
-        const progress = sr.contract?.milestones
-          ? Math.round(sr.contract.milestones.filter(m=>m.status==='APPROVED').length
-              * 100 / (sr.contract.milestones.length||1))
-          : null;
         const form = bidForms[sr.subReqId] || {};
         return (
           <div key={sr.subReqId} style={{

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 const styles = {
@@ -14,12 +14,11 @@ const styles = {
 
 export default function Navbar() {
   const { user, logout } = useAuth();
-  const navigate = useNavigate();
 
   const handleLogout = () => {
     logout();
     window.location.href = '/login';
-};
+  };
 
   return (
     <nav style={styles.nav}>
